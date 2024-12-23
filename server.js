@@ -9,17 +9,6 @@ const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;
 
 const LocalStrategy = require("passport-local");
-passport.use(
-  new LocalStrategy((username, password, done) => {
-    myDataBase.findOne({ username: username }, (err, user) => {
-      console.log(`User ${username} attempted to log in.`);
-      if (err) return done(err);
-      if (!user) return done(null, false);
-      if (password != user.password) return done(null, false);
-      return done(null, user);
-    });
-  })
-);
 
 const app = express();
 app.set("view engine", "pug");
@@ -43,13 +32,41 @@ app.use(passport.session());
 myDB(async (client) => {
   const myDataBase = await client.db("database").collection("users");
 
+  passport.use(
+    new LocalStrategy((username, password, done) => {
+      myDataBase.findOne({ username: username }, (err, user) => {
+        console.log(`User ${username} attempted to log in.`);
+        if (err) return done(err);
+        if (!user) return done(null, false);
+        if (password != user.password) return done(null, false);
+        return done(null, user);
+      });
+    })
+  );
+
   // Be sure to change the title
   app.route("/").get((req, res) => {
     // Change the response to render the Pug template
     res.render("index", {
       title: "Connected to Database",
       message: "Please login",
+      showLogin: true,
     });
+  });
+
+  app
+    .route("/login")
+    .post(
+      passport.authenticate("local", { failureRedirect: "/" }),
+      (req, res) => {
+        //  res.render("profile");
+        // return res.redirect("/profile");
+        // return
+      }
+    );
+
+  app.route("/profile").get((req, res) => {
+    res.render("profile");
   });
 
   // Serialization and deserialization here...
