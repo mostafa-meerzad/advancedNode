@@ -35,7 +35,7 @@ module.exports = function (app, myDataBase) {
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
         callbackURL:
-          "https://boilerplate-advancednode.sky020.repl.co/auth/github/callback",
+          "http://localhost:8080/auth/github/callback",
       },
       function (accessToken, refreshToken, profile, cb) {
         // console.log(profile);
