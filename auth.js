@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const LocalStrategy = require("passport-local");
 const GitHubStrategy = require("passport-github").Strategy;
 require("dotenv").config();
+const {ObjectID} = require('mongodb');
 
 module.exports = function (app, myDataBase) {
   // Serialization and deserialization here...
